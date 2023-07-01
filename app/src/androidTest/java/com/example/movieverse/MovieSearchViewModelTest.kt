@@ -2,6 +2,7 @@ import com.example.movieverse.data.models.Movie
 import com.example.movieverse.data.repositories.MovieRepository
 import com.example.movieverse.data.viewmodels.MovieSearchViewModel
 import com.example.movieverse.data.viewmodels.SearchResult
+import com.example.movieverse.data.viewmodels.SearchResultMovie
 import io.mockk.every
 import io.mockk.mockk
 import io.reactivex.rxjava3.core.Observable
@@ -29,7 +30,8 @@ class MovieSearchViewModelTest {
         val movies = listOf(
             Movie("Movie 1", "poster1"), Movie("Movie 2", "poster2"))
 
-        val searchResult = SearchResult(movies, searchTerm)
+        val searchResultMovies = movies.map { SearchResultMovie(it.name, it.posterImage, "Mo") }
+        val searchResult = SearchResult(searchResultMovies, searchTerm)
         every { movieRepository.getAllMovies() } returns Observable.just(movies)
 
         viewModel.searchMovies(searchTerm)
@@ -44,7 +46,7 @@ class MovieSearchViewModelTest {
 
         val searchTerm = "Bird"
         val emptySearchResultList = emptyList<Movie>()
-        val emptySearchResult = SearchResult(emptySearchResultList, searchTerm)
+        val emptySearchResult = SearchResult(emptyList(), searchTerm)
         every { movieRepository.getAllMovies() } returns Observable.just(emptySearchResultList)
 
         viewModel.searchMovies(searchTerm)

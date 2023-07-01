@@ -39,7 +39,7 @@ class MovieListAdapter(val context: Context) :
     /**
      * ViewHolder class representing a movie list item.
      */
-    inner class MovieViewHolder(val binding: MovieItemLayoutBinding) :
+    inner class MovieViewHolder(private val binding: MovieItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("DiscouragedApi")

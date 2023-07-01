@@ -24,7 +24,7 @@ class MovieSearchViewModel @Inject constructor(
     /**
      * Instance of the [Logger] class used for logging data.
      * */
-    val logger = Logger(javaClass.simpleName)
+    private val logger = Logger(javaClass.simpleName)
 
     //MutableLiveData to hold the search results
     val moviesSearchList: MutableLiveData<SearchResult> = MutableLiveData()

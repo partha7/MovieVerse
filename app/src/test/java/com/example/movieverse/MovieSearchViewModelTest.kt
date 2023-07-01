@@ -1,3 +1,5 @@
+package com.example.movieverse
+
 import com.example.movieverse.data.models.Movie
 import com.example.movieverse.data.repositories.MovieRepository
 import com.example.movieverse.data.viewmodels.MovieSearchViewModel

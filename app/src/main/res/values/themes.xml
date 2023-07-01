@@ -1,0 +1,18 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MovieVerse" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.MovieVerse" parent="Base.Theme.MovieVerse" />
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Remove the search icon at the start -->
+        <item name="searchIcon">@android:color/transparent</item>
+        <!-- Set the close icon for clearing the search query -->
+        <item name="closeIcon">@drawable/search_cancel</item>
+        <!-- Set the background tint for the close icon -->
+        <item name="closeIconTint">@color/white</item>
+    </style>
+</resources>

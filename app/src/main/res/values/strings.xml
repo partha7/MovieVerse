@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MovieVerse</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="oops_no_search_results_found">Oops! No search results found</string>
+    <string name="search_string_length_warning">Please enter minimum 3 characters to search</string>
+    <string name="search_movie">Search movie</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="romantic_comedy">Romantic Comedy</string>
+</resources>

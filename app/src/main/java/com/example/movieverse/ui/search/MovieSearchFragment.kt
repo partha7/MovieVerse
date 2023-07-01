@@ -129,7 +129,7 @@ class MovieSearchFragment : Fragment() {
     private fun setupSearchResultObserver() {
         binding.apply {
             movieSearchViewModel.moviesSearchList.observe(viewLifecycleOwner) {
-                movieSearchAdapter.setData(it)
+                movieSearchAdapter.setData(it.searchResultList)
                 //showing min character message when search term is small than 3 characters
                 if (it.searchTerm.length < 3) {
                     recyclerview.hide()

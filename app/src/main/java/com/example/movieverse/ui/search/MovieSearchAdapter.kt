@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.movieverse.R
-import com.example.movieverse.data.models.Movie
-import com.example.movieverse.data.viewmodels.SearchResult
+import com.example.movieverse.data.viewmodels.SearchResultMovie
 import com.example.movieverse.databinding.MovieItemLayoutBinding
 
 /**
@@ -26,24 +25,27 @@ import com.example.movieverse.databinding.MovieItemLayoutBinding
 class MovieSearchAdapter(val context: Context) :
     RecyclerView.Adapter<MovieSearchAdapter.MovieViewHolder>() {
 
-    //String storing the search term
-    private var searchText: String = ""
-
     /**
      * DiffUtil instance for calculating the difference between old and new search results.
      */
-    private val diffUtil = object : DiffUtil.ItemCallback<Movie>() {
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-            return oldItem.name == newItem.name
+    private val diffUtil = object : DiffUtil.ItemCallback<SearchResultMovie>() {
+        override fun areItemsTheSame(
+            oldItem: SearchResultMovie,
+            newItem: SearchResultMovie
+        ): Boolean {
+            return oldItem.name == newItem.name && oldItem.searchTerm == newItem.searchTerm
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areContentsTheSame(
+            oldItem: SearchResultMovie,
+            newItem: SearchResultMovie
+        ): Boolean {
             return oldItem == newItem
         }
     }
 
     //List storing the search results
-    private val searchResults: AsyncListDiffer<Movie> = AsyncListDiffer(this, diffUtil)
+    private val searchResults: AsyncListDiffer<SearchResultMovie> = AsyncListDiffer(this, diffUtil)
 
     /**
      * Creates a new ViewHolder instance for the movie list item.
@@ -70,10 +72,9 @@ class MovieSearchAdapter(val context: Context) :
     /**
      * Setting new search data.
      */
-    fun setData(it: SearchResult?) {
-        if (it != null) {
-            searchResults.submitList(it.searchResultList)
-            searchText = it.searchTerm
+    fun setData(searchResultList: List<SearchResultMovie>?) {
+        if (searchResultList != null) {
+            searchResults.submitList(searchResultList)
         }
     }
 
@@ -85,7 +86,7 @@ class MovieSearchAdapter(val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("DiscouragedApi")
-        fun bind(movie: Movie) {
+        fun bind(movie: SearchResultMovie) {
             val resourceName = movie.posterImage.split(".")[0]
             var resourceId: Int =
                 context.resources.getIdentifier(resourceName, "drawable", context.packageName)
@@ -102,15 +103,15 @@ class MovieSearchAdapter(val context: Context) :
         /**
          * Creates and returns a spannable string for highlighting the search text in the movie title
          * */
-        private fun getSpannableStringForTitle(movie: Movie): SpannableString {
+        private fun getSpannableStringForTitle(movie: SearchResultMovie): SpannableString {
             val spannableString = SpannableString(movie.name)
 
             // Specify the color for the search portion of the text
             val textColor = ContextCompat.getColor(context, R.color.search_text_colour)
 
             // Specify the start and end indices of the portion to color
-            val startIndex = movie.name.indexOf(searchText, ignoreCase = true)
-            val endIndex = startIndex + searchText.length
+            val startIndex = movie.name.indexOf(movie.searchTerm, ignoreCase = true)
+            val endIndex = startIndex + movie.searchTerm.length
 
             if (startIndex >= 0 && endIndex <= movie.name.length)
             // Apply the color to that portion of the text

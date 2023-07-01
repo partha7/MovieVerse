@@ -31,9 +31,9 @@ class MovieSearchViewModel @Inject constructor(
 
     /**
      * Searches for movies based on the provided search text.
-     * @param text The search text
+     * @param searchTerm The search text
      */
-    fun searchMovies(text: String) {
+    fun searchMovies(searchTerm: String) {
         compositeDisposable.add(
             repository.getAllMovies()
                 .subscribeOn(Schedulers.io())
@@ -41,10 +41,15 @@ class MovieSearchViewModel @Inject constructor(
                 .subscribe(
                     {
                         val searchResultList = it.filter { movie ->
-                            movie.name.contains(text, ignoreCase = true)
+                            //filtering based on search term
+                            movie.name.contains(searchTerm, ignoreCase = true)
+                        }.map { movie ->
+                            //Converting Movie objects into a SearchResultMovie type as we need the search term to change the name colour in the search adapter.
+                            //This is for AsyncListDiffer to consider viewholder updation in the cases of same list with different search terms.
+                            SearchResultMovie(movie.name, movie.posterImage, searchTerm)
                         }
                         logger.info("Search results with size ${searchResultList.size}")
-                        moviesSearchList.value = SearchResult(searchResultList, text)
+                        moviesSearchList.value = SearchResult(searchResultList, searchTerm)
                     },
                     {
                         logger.error("Error while searching movies", it)
@@ -60,7 +65,19 @@ class MovieSearchViewModel @Inject constructor(
 
 /**
  * Data class to hold the search results and search term.
+ *
  * @param searchResultList The list of search results
  * @param searchTerm The search term used for the search
  */
-data class SearchResult(val searchResultList: List<Movie>, val searchTerm: String)
+data class SearchResult(val searchResultList: List<SearchResultMovie>, val searchTerm: String)
+
+/**
+ * Data class to hold the [Movie] items attached with the search term.
+ * This is required for updating the movie name colour in the search adapter based on the search term.
+ * As we are using [AsyncListDiffer] we need the search term for it to update same lists with different search terms.
+ *
+ * @param name The movie name
+ * @param posterImage Movie poster image
+ * @param searchTerm The search term used
+ */
+data class SearchResultMovie(val name: String, val posterImage: String, val searchTerm: String)

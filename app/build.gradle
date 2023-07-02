@@ -43,6 +43,9 @@ android {
                 useLegacyPackaging = true
             }
         }
+        unitTests {
+            returnDefaultValues = true
+        }
     }
 }
 
@@ -88,6 +91,10 @@ dependencies {
     androidTestImplementation "io.mockk:mockk-android:1.12.0"
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
     androidTestImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation "io.reactivex.rxjava3:rxjava:3.1.6"
+    testImplementation "io.reactivex.rxjava3:rxandroid:3.0.2"
+    androidTestImplementation "io.reactivex.rxjava3:rxjava:3.1.6"
+    androidTestImplementation "io.reactivex.rxjava3:rxandroid:3.0.2"
 
 
 

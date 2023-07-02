@@ -1,6 +1,7 @@
 package com.example.movieverse
 
 import android.content.Context
+import android.util.Log
 import com.example.movieverse.data.models.Data
 import com.example.movieverse.data.models.Movie
 import com.example.movieverse.data.models.Movies
@@ -10,6 +11,7 @@ import com.example.movieverse.utils.Constants
 import com.google.gson.Gson
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -31,7 +33,8 @@ class MovieRepositoryTest {
     fun testReadJsonFileReturnsDataObjectWhenFileExists() {
 
         val fileName = "test_file.json"
-        val jsonData = "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"The Birds\",\"poster-image\": \"poster1.jpg\"},{\"name\": \"Rear Window\",\"poster-image\": \"poster2.jpg\"}]}}}"
+        val jsonData =
+            "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"The Birds\",\"poster-image\": \"poster1.jpg\"},{\"name\": \"Rear Window\",\"poster-image\": \"poster2.jpg\"}]}}}"
 
         val inputStream = jsonData.byteInputStream()
 
@@ -48,12 +51,16 @@ class MovieRepositoryTest {
     fun testReadJsonFileReturnsNullWhenFileDoesNotExist() {
         val fileName = "non_existent_file.json"
 
-        // Mock the context.assets.open method to throw an exception
+        mockkStatic(Log::class)
+
+        every { Log.e(any(), any(), any()) } returns 0
+
+        //mock the context.assets.open method to throw an exception
         every { context.assets.open(fileName) } throws Exception()
 
         val result = movieRepository.readJsonFile(fileName)
 
-        // Assert
+        //assert
         assertEquals(null, result)
     }
 
@@ -65,11 +72,19 @@ class MovieRepositoryTest {
         val data1 = Data(Page("", "", "", "", Movies(listOf(movie1, movie2))))
         val data2 = Data(Page("", "", "", "", Movies(listOf(movie3))))
 
-        val json1 = "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"The Birds\",\"poster-image\": \"poster1.jpg\"},{\"name\": \"Rear Window\",\"poster-image\": \"poster2.jpg\"}]}}}"
-        val json2 = "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"Rear Window\",\"poster-image\": \"poster1.jpg\"}]}}}"
+        val json1 =
+            "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"The Birds\",\"poster-image\": \"poster1.jpg\"},{\"name\": \"Rear Window\",\"poster-image\": \"poster2.jpg\"}]}}}"
+        val json2 =
+            "{\"page\": {\"title\": \"Romantic Comedy\",\"total-content-items\" : \"54\",\"page-num\" : \"1\",\"page-size\" : \"20\",\"content-items\": {\"content\": [{\"name\": \"Rear Window\",\"poster-image\": \"poster1.jpg\"}]}}}"
 
-        every { context.assets.open("${Constants.FILENAME_PREFIX}1.json").bufferedReader().use { it.readText() } } returns json1
-        every { context.assets.open("${Constants.FILENAME_PREFIX}2.json").bufferedReader().use { it.readText() } } returns json2
+        every {
+            context.assets.open("${Constants.FILENAME_PREFIX}1.json").bufferedReader()
+                .use { it.readText() }
+        } returns json1
+        every {
+            context.assets.open("${Constants.FILENAME_PREFIX}2.json").bufferedReader()
+                .use { it.readText() }
+        } returns json2
         every { gson.fromJson(json1, Data::class.java) } returns data1
         every { gson.fromJson(json2, Data::class.java) } returns data2
 
